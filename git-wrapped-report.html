@@ -1,22 +1,11 @@
-package renderer
-
-import (
-	"fmt"
-	"html/template"
-	"os"
-
-	"git-wrapped/internal/analytics"
-)
-
-// 增强版 HTML 模板：保留 GitHub 风格，增加数字滚动与悬停光效
-const htmlTemplate = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git Wrapped 2026</title>
     <style>
-        /* 默认浅色主题变量 (GitHub 风格) */
+         
         :root {
             --bg-color: #f6f8fa;
             --card-bg: #ffffff;
@@ -32,7 +21,7 @@ const htmlTemplate = `<!DOCTYPE html>
             --hover-glow: 0 0 0 2px rgba(9, 105, 218, 0.2), 0 8px 24px rgba(140, 149, 159, 0.25);
         }
 
-        /* 自动适配深色模式 */
+         
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #0d1117;
@@ -65,7 +54,7 @@ const htmlTemplate = `<!DOCTYPE html>
             transition: background-color 0.3s ease;
         }
 
-        /* 卡片入场动画 */
+         
         @keyframes slideUpFade {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -84,7 +73,7 @@ const htmlTemplate = `<!DOCTYPE html>
             transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
         }
 
-        /* 悬停光效：边框亮起 + 阴影扩散 + 轻微上浮 */
+         
         .card:hover {
             box-shadow: var(--hover-glow);
             border-color: var(--bar-fill-1);
@@ -122,7 +111,7 @@ const htmlTemplate = `<!DOCTYPE html>
             font-variant-numeric: tabular-nums;
         }
 
-        /* 进度条样式与动画 */
+         
         .progress-bar {
             width: 100%;
             height: 12px;
@@ -136,7 +125,7 @@ const htmlTemplate = `<!DOCTYPE html>
             to { transform: scaleX(1); }
         }
 
-        /* 脉冲光效：进度条填充时伴随微弱闪光 */
+         
         @keyframes pulseGlow {
             0% { filter: brightness(1); }
             50% { filter: brightness(1.2); }
@@ -186,7 +175,7 @@ const htmlTemplate = `<!DOCTYPE html>
         }
         .footer a:hover { text-decoration: underline; }
 
-        /* 移动端小屏适配 */
+         
         @media (max-width: 480px) {
             .card { padding: 30px 20px; }
             h1 { font-size: 1.75rem; }
@@ -202,26 +191,26 @@ const htmlTemplate = `<!DOCTYPE html>
         <div class="stat-group">
             <div class="stat-header">
                 <div class="label">☕ 摸鱼指数</div>
-                <div class="value"><span id="slacker-value" data-target="{{.SlackerRatio}}">0.0</span>%</div>
+                <div class="value"><span id="slacker-value" data-target="0.0">0.0</span>%</div>
             </div>
-            <div class="progress-bar" role="progressbar" aria-valuenow="{{.SlackerRatio}}" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-fill fill-blue" id="slacker-bar" style="width: 0%;" data-target-width="{{.SlackerRatio}}"></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="0.0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill fill-blue" id="slacker-bar" style="width: 0%;" data-target-width="0.0"></div>
             </div>
         </div>
 
         <div class="stat-group">
             <div class="stat-header">
                 <div class="label">🦉 夜猫子指数</div>
-                <div class="value"><span id="nightowl-value" data-target="{{.NightOwlRatio}}">0.0</span>%</div>
+                <div class="value"><span id="nightowl-value" data-target="0.0">0.0</span>%</div>
             </div>
-            <div class="progress-bar" role="progressbar" aria-valuenow="{{.NightOwlRatio}}" aria-valuemin="0" aria-valuemax="100">
-                <div class="progress-fill fill-purple" id="nightowl-bar" style="width: 0%;" data-target-width="{{.NightOwlRatio}}"></div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="0.0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill fill-purple" id="nightowl-bar" style="width: 0%;" data-target-width="0.0"></div>
             </div>
         </div>
 
         <div class="verdict">
-            <p>{{.Verdict1}}</p>
-            <p>{{.Verdict2}}</p>
+            <p>无情的代码机器，卷王本王。</p>
+            <p>作息规律，发量惊人。</p>
         </div>
 
         <div class="footer">
@@ -231,7 +220,7 @@ const htmlTemplate = `<!DOCTYPE html>
 
     <script>
         (function() {
-            // 数字滚动动画
+            
             function animateValue(element, start, end, duration) {
                 if (end === 0) {
                     element.textContent = '0.0';
@@ -252,14 +241,14 @@ const htmlTemplate = `<!DOCTYPE html>
                 step();
             }
 
-            // 进度条宽度动画 (直接设置 style.width 配合 CSS transition 会有更顺滑效果)
+            
             function animateProgressBar(bar, targetWidth) {
-                // 使用 requestAnimationFrame 设置最终宽度，CSS transition 自动处理过渡
-                // 但因为我们有 fillBar 动画，这里只需设置最终值即可
+                
+                
                 bar.style.width = targetWidth + '%';
             }
 
-            // 获取元素
+            
             const slackerSpan = document.getElementById('slacker-value');
             const nightOwlSpan = document.getElementById('nightowl-value');
             const slackerBar = document.getElementById('slacker-bar');
@@ -268,7 +257,7 @@ const htmlTemplate = `<!DOCTYPE html>
             const slackerTarget = parseFloat(slackerSpan.dataset.target);
             const nightOwlTarget = parseFloat(nightOwlSpan.dataset.target);
 
-            // 数字滚动 (从0到目标值，时长1.2秒)
+            
             if (!isNaN(slackerTarget)) {
                 animateValue(slackerSpan, 0, slackerTarget, 1200);
             }
@@ -276,7 +265,7 @@ const htmlTemplate = `<!DOCTYPE html>
                 animateValue(nightOwlSpan, 0, nightOwlTarget, 1200);
             }
 
-            // 进度条填充动画 (延迟300ms后开始，与CSS动画同步)
+            
             setTimeout(() => {
                 if (slackerBar) {
                     slackerBar.style.width = slackerTarget + '%';
@@ -288,47 +277,4 @@ const htmlTemplate = `<!DOCTYPE html>
         })();
     </script>
 </body>
-</html>`
-
-type HTMLData struct {
-	SlackerRatio  string
-	NightOwlRatio string
-	Verdict1      string
-	Verdict2      string
-}
-
-func GenerateHTMLCard(slacker analytics.SlackerReport, nightOwl analytics.NightOwlReport, outputPath string) error {
-	tmpl, err := template.New("card").Parse(htmlTemplate)
-	if err != nil {
-		return err
-	}
-
-	data := HTMLData{
-		SlackerRatio:  fmt.Sprintf("%.1f", slacker.Ratio),
-		NightOwlRatio: fmt.Sprintf("%.1f", nightOwl.Ratio),
-		Verdict1:      getHTMLVerdict1(slacker.Ratio),
-		Verdict2:      getHTMLVerdict2(nightOwl.Ratio),
-	}
-
-	f, err := os.Create(outputPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	return tmpl.Execute(f, data)
-}
-
-func getHTMLVerdict1(ratio float64) string {
-	if ratio > 30 {
-		return "你是职场皮划艇冠军，Typo Fix 艺术家。"
-	}
-	return "无情的代码机器，卷王本王。"
-}
-
-func getHTMLVerdict2(ratio float64) string {
-	if ratio > 20 {
-		return "月亮不睡你不睡，你是秃头小宝贝。"
-	}
-	return "作息规律，发量惊人。"
-}
+</html>
