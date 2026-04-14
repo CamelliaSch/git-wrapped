@@ -64,12 +64,6 @@ go build -o git-wrapped .
 ### 📄 License
 [MIT](sslocal://flow/file_open?url=LICENSE&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
 
-### 👨‍💻 Author
-**CamelliaSch**
-- Former Tencent Cloud WAF backend engineer
-- B.Eng in Information Security, M.Sc in Computer Science
-- GitHub: [@CamelliaSch](sslocal://flow/file_open?url=https%3A%2F%2Fgithub.com%2FCamelliaSch&flow_extra=eyJsaW5rX3R5cGUiOiJjb2RlX2ludGVycHJldGVyIn0=)
-
 ---
 
 <a id="chinese"></a>
